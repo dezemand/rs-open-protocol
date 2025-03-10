@@ -426,6 +426,7 @@ dependencies = [
 name = "open-protocol-client"
 version = "0.1.0"
 dependencies = [
+ "bytes",
  "flume",
  "open-protocol",
  "open-protocol-codec",

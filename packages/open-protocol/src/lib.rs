@@ -222,6 +222,22 @@ open_protocol_messages!(
     (9999, 1) => keep_alive::MID9999rev1,
 );
 
+
+impl OpenProtocolMessage {
+    pub fn decode_message2(decoder: &mut ::open_protocol_codec::decode::Decoder) -> ::open_protocol_codec::decode::Result<(Header, Self)> {
+        let header = Header::decode(decoder)?;
+
+        if (header.length as usize) > decoder.len() {
+            return Err(::open_protocol_codec::decode::Error::InsufficientBytes { have: decoder.len(), need: header.length as usize })
+        }
+
+        let payload = Self::decode_payload(header.mid, header.revision_number(), decoder)?;
+        decoder.expect_char('\0')?;
+        Ok((header, payload))
+    }
+
+}
+
 #[cfg(test)]
 mod tests {
     use open_protocol_codec::{encode, decode};

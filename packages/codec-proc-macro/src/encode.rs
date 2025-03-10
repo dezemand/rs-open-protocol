@@ -112,7 +112,7 @@ fn expand_enum(input: &DeriveInput, data_enum: &DataEnum) -> Result<TokenStream>
         let value = field.value;
 
         let out = match value {
-            EnumValue::Number(n) => quote! { Self::#item => #n, },
+            EnumValue::Number(n) => quote! { Self::#item => &#n, },
             EnumValue::Range(_) => quote! { Self::#item(n) => n, },
             EnumValue::Other => quote! { Self::#item(n) => n, },
         };

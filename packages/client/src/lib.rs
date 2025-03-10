@@ -3,6 +3,7 @@ use thiserror;
 use open_protocol_codec::{decode, encode};
 
 mod client;
+mod network;
 
 #[derive(Debug, thiserror::Error)]
 pub enum Error {

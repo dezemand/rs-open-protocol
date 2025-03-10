@@ -100,7 +100,7 @@ pub struct MID0011rev4 {
 pub struct MID0012rev1 {
 
     /// Three ASCII digits for the parameter set ID
-    #[open_protocol_field(number = 1, length = 3)]
+    #[open_protocol_field(length = 3)]
     pub parameter_set_id: u16,
 }
 

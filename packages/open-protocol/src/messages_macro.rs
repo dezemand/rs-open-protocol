@@ -10,7 +10,7 @@ macro_rules! open_protocol_messages {
             }
 
             impl OpenProtocolMessage {
-                fn mid_revision(&self) -> (u16, u16) {
+                pub fn mid_revision(&self) -> (u16, u16) {
                     match self {
                         $(
                             OpenProtocolMessage::[<MID $mid rev $rev>](_) => ($mid, $rev),
@@ -18,7 +18,7 @@ macro_rules! open_protocol_messages {
                     }
                 }
 
-                fn encode_payload(&self, encoder: &mut ::open_protocol_codec::encode::Encoder) -> ::open_protocol_codec::encode::Result<()> {
+                pub fn encode_payload(&self, encoder: &mut ::open_protocol_codec::encode::Encoder) -> ::open_protocol_codec::encode::Result<()> {
                     match self {
                         $(
                             OpenProtocolMessage::[<MID $mid rev $rev>](payload) => payload.encode(encoder)?,
@@ -27,7 +27,7 @@ macro_rules! open_protocol_messages {
                     Ok(())
                 }
 
-                fn decode_payload(mid: u16, revision: u16, decoder: &mut ::open_protocol_codec::decode::Decoder) -> ::open_protocol_codec::decode::Result<Self> {
+                pub fn decode_payload(mid: u16, revision: u16, decoder: &mut ::open_protocol_codec::decode::Decoder) -> ::open_protocol_codec::decode::Result<Self> {
                     Ok(match (mid, revision) {
                         $(
                             ($mid, $rev) => OpenProtocolMessage::[<MID $mid rev $rev>]($msg::decode(decoder)?),
@@ -36,8 +36,13 @@ macro_rules! open_protocol_messages {
                     })
                 }
 
-                fn decode_message(decoder: &mut ::open_protocol_codec::decode::Decoder) -> ::open_protocol_codec::decode::Result<(Header, Self)> {
+                pub fn decode_message(decoder: &mut ::open_protocol_codec::decode::Decoder) -> ::open_protocol_codec::decode::Result<(Header, Self)> {
                     let header = Header::decode(decoder)?;
+
+                    if (header.length as usize) > decoder.len() {
+                        return Err(::open_protocol_codec::decode::Error::InsufficientBytes { have: decoder.len(), need: header.length as usize })
+                    }
+
                     let payload = Self::decode_payload(header.mid, header.revision_number(), decoder)?;
                     decoder.expect_char('\0')?;
                     Ok((header, payload))

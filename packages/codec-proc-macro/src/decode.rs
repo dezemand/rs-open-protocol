@@ -82,7 +82,7 @@ fn expand_enum(input: &DeriveInput, data_enum: &DataEnum) -> Result<TokenStream>
     if !has_other {
         decode_enum_lines.push(quote! {
             n => Err(::open_protocol_codec::decode::Error::InvalidEnumNumber(n, decoder.pos() - size)),
-        })
+        });
     }
 
     Ok(quote! {
