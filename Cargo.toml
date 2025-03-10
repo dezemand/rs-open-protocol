@@ -1,0 +1,16 @@
+[workspace]
+members = [
+    "packages/client",
+    "packages/codec",
+    "packages/open-protocol",
+    "packages/mqtt-adapter",
+    "packages/codec-proc-macro",
+    "packages/client"
+]
+resolver = "2"
+
+[workspace.dependencies]
+open-protocol = { path = "packages/open-protocol" }
+open-protocol-client = { path = "packages/client" }
+open-protocol-codec = { path = "packages/codec" }
+open-protocol-codec-proc-macro = { path = "packages/codec-proc-macro" }

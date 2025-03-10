@@ -1,0 +1,9 @@
+[package]
+name = "open-protocol-client"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+open-protocol = { workspace = true }
+open-protocol-codec = { workspace = true }
+thiserror = "2.0"
