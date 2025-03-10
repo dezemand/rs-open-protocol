@@ -8,3 +8,4 @@ open-protocol-codec = { workspace = true }
 open-protocol-codec-proc-macro = { workspace = true }
 chrono = "0.4"
 paste = "1.0"
+thiserror = "2.0"

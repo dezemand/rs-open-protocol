@@ -39,6 +39,7 @@ macro_rules! open_protocol_messages {
                 fn decode_message(decoder: &mut ::open_protocol_codec::decode::Decoder) -> ::open_protocol_codec::decode::Result<(Header, Self)> {
                     let header = Header::decode(decoder)?;
                     let payload = Self::decode_payload(header.mid, header.revision_number(), decoder)?;
+                    decoder.expect_char('\0')?;
                     Ok((header, payload))
                 }
             }

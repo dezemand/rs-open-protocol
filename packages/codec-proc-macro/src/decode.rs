@@ -3,7 +3,7 @@ use crate::field::{get_fields_size, parse_fields, Amount, MessageField, MessageF
 use proc_macro2::{Ident, Span, TokenStream};
 use quote::quote;
 use syn::{DataEnum, DataStruct, DeriveInput};
-use crate::enum_items::{parse_enum_items};
+use crate::enum_items::{parse_enum_items, EnumValue};
 
 pub fn expand(input: DeriveInput) -> Result<TokenStream> {
     match &input.data {
@@ -56,12 +56,33 @@ fn expand_struct(input: &DeriveInput, data_struct: &DataStruct) -> Result<TokenS
 fn expand_enum(input: &DeriveInput, data_enum: &DataEnum) -> Result<TokenStream> {
     let enum_name = &input.ident;
     let items = parse_enum_items(data_enum.variants.iter().collect())?;
+    let mut has_other = false;
 
     let mut decode_enum_lines = Vec::with_capacity(items.len());
     for item in items {
         let name = item.ident;
         let value = item.value;
-        decode_enum_lines.push(quote! { #value => Ok(Self::#name), });
+
+        let out = match value {
+            EnumValue::Number(n) => quote! { #n => Ok(Self::#name), },
+            EnumValue::Range(n) => {
+                let low = n.start();
+                let high = n.end();
+                quote! { n @ #low..=#high => Ok(Self::#name(n)), }
+            },
+            EnumValue::Other => {
+                has_other = true;
+                quote! { n => Ok(Self::#name(n)), }
+            }
+        };
+
+        decode_enum_lines.push(out);
+    }
+
+    if !has_other {
+        decode_enum_lines.push(quote! {
+            n => Err(::open_protocol_codec::decode::Error::InvalidEnumNumber(n, decoder.pos() - size)),
+        })
     }
 
     Ok(quote! {
@@ -75,7 +96,6 @@ fn expand_enum(input: &DeriveInput, data_enum: &DataEnum) -> Result<TokenStream>
 
                 match number {
                     #(#decode_enum_lines)*
-                    n => Err(::open_protocol_codec::decode::Error::InvalidEnumNumber(n, decoder.pos() - size)),
                 }
             }
         }

@@ -3,7 +3,7 @@ use crate::field::{parse_fields, get_fields_size, Amount, MessageField, MessageF
 use proc_macro2::{Ident, Span, TokenStream};
 use quote::quote;
 use syn::{DataEnum, DataStruct, DeriveInput};
-use crate::enum_items::{parse_enum_items};
+use crate::enum_items::{parse_enum_items, EnumValue};
 
 pub fn expand(input: DeriveInput) -> Result<TokenStream> {
     match &input.data {
@@ -111,7 +111,13 @@ fn expand_enum(input: &DeriveInput, data_enum: &DataEnum) -> Result<TokenStream>
         let item = field.ident;
         let value = field.value;
 
-        write_enum_lines.push(quote! { Self::#item => #value, });
+        let out = match value {
+            EnumValue::Number(n) => quote! { Self::#item => #n, },
+            EnumValue::Range(_) => quote! { Self::#item(n) => n, },
+            EnumValue::Other => quote! { Self::#item(n) => n, },
+        };
+
+        write_enum_lines.push(out);
     }
 
     Ok(quote! {

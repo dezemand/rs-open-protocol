@@ -180,6 +180,7 @@ checksum = "da0e4dd2a88388a1f4ccc7c9ce104604dab68d9f408dc34cd45823d5a9069095"
 dependencies = [
  "futures-core",
  "futures-sink",
+ "nanorand",
  "spin",
 ]
 
@@ -221,8 +222,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c4567c8db10ae91089c99af84c68c38da3ec2f087c3f82960bcdbf3656b6f4d7"
 dependencies = [
  "cfg-if",
+ "js-sys",
  "libc",
  "wasi",
+ "wasm-bindgen",
 ]
 
 [[package]]
@@ -303,6 +306,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "itertools"
+version = "0.14.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2b192c782037fadd9cfa75548310488aabdbf3d2da73885b31bd0abd03351285"
+dependencies = [
+ "either",
+]
+
+[[package]]
 name = "js-sys"
 version = "0.3.77"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -367,6 +379,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "nanorand"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6a51313c5820b0b02bd422f4b44776fbf47961755c74ce64afc73bfad10226c3"
+dependencies = [
+ "getrandom",
+]
+
+[[package]]
 name = "num-traits"
 version = "0.2.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -398,15 +419,18 @@ dependencies = [
  "open-protocol-codec",
  "open-protocol-codec-proc-macro",
  "paste",
+ "thiserror 2.0.11",
 ]
 
 [[package]]
 name = "open-protocol-client"
 version = "0.1.0"
 dependencies = [
+ "flume",
  "open-protocol",
  "open-protocol-codec",
  "thiserror 2.0.11",
+ "tokio",
 ]
 
 [[package]]
@@ -421,6 +445,7 @@ dependencies = [
 name = "open-protocol-codec-proc-macro"
 version = "0.1.0"
 dependencies = [
+ "itertools",
  "open-protocol-codec",
  "proc-macro2",
  "quote",

@@ -1,11 +1,30 @@
 pub mod messages;
+pub mod types;
+pub mod enums;
 mod messages_macro;
 
 use open_protocol_codec::decode::{Decode};
 use open_protocol_codec::encode::{Encode};
 use open_protocol_codec_proc_macro::{OpenProtocolDecode, OpenProtocolEncode};
 use crate::messages_macro::open_protocol_messages;
-use crate::messages::{alarm, communication, job, link_communication, mode, multi_spindle_result, multi_spindle_status, parameter_set, tightening_result, time, tool, vin};
+use crate::messages::{
+    alarm,
+    communication,
+    job,
+    keep_alive,
+    link_communication,
+    mode,
+    multi_spindle_result,
+    multi_spindle_status,
+    parameter_set,
+    powermacs_result,
+    result,
+    tightening_result,
+    time,
+    tool,
+    user_interface,
+    vin
+};
 
 #[derive(Debug, Default, Eq, PartialEq, Clone, OpenProtocolEncode, OpenProtocolDecode)]
 pub struct Header {
@@ -58,6 +77,8 @@ open_protocol_messages!(
     (0004, 2) => communication::MID0004rev2,
     (0005, 1) => communication::MID0005rev1,
     (0006, 1) => communication::MID0006rev1,
+    (0008, 1) => communication::MID0008rev1,
+    (0009, 1) => communication::MID0009rev1,
 
     (0010, 1) => parameter_set::MID0010rev1,
     (0011, 1) => parameter_set::MID0011rev1,
@@ -124,11 +145,29 @@ open_protocol_messages!(
 
     (0060, 1) => tightening_result::MID0060rev1,
     (0061, 1) => tightening_result::MID0061rev1,
+    (0061, 2) => tightening_result::MID0061rev2,
+    (0061, 3) => tightening_result::MID0061rev3,
+    (0062, 1) => tightening_result::MID0062rev1,
+    (0063, 1) => tightening_result::MID0063rev1,
     (0064, 1) => tightening_result::MID0064rev1,
     (0065, 1) => tightening_result::MID0065rev1,
-    // ...
+    (0066, 1) => tightening_result::MID0066rev1,
+    (0066, 2) => tightening_result::MID0066rev2,
+    (0067, 1) => tightening_result::MID0067rev1,
+    (0900, 1) => tightening_result::MID0900rev1,
+    (0900, 2) => tightening_result::MID0900rev2,
+    (0900, 3) => tightening_result::MID0900rev3,
+    (0901, 1) => tightening_result::MID0901rev1,
+    (0901, 2) => tightening_result::MID0901rev2,
+    (0901, 3) => tightening_result::MID0901rev3,
+    (0902, 1) => tightening_result::MID0902rev1,
 
-    // result
+    (1201, 1) => result::MID1201rev1,
+    (1201, 2) => result::MID1201rev2,
+    (1201, 3) => result::MID1201rev3,
+    (1202, 1) => result::MID1202rev1,
+    (1202, 2) => result::MID1202rev2,
+    (1203, 1) => result::MID1203rev1,
 
     (0070, 1) => alarm::MID0070rev1,
     (0071, 1) => alarm::MID0071rev1,
@@ -156,6 +195,31 @@ open_protocol_messages!(
     (0102, 1) => multi_spindle_result::MID0102rev1,
     (0103, 1) => multi_spindle_result::MID0103rev1,
     (0104, 1) => multi_spindle_result::MID0104rev1,
+
+    (0105, 1) => powermacs_result::MID0105rev1,
+    (0106, 1) => powermacs_result::MID0106rev1,
+    (0107, 1) => powermacs_result::MID0107rev1,
+    (0108, 1) => powermacs_result::MID0108rev1,
+    (0109, 1) => powermacs_result::MID0109rev1,
+
+    (0110, 1) => user_interface::MID0110rev1,
+    (0111, 1) => user_interface::MID0111rev1,
+    (0113, 1) => user_interface::MID0113rev1,
+
+    // job_advanced;
+    // multiple_identifiers;
+    // io_interface;
+    // plc_user_data;
+    // selector;
+    // tool_location_system;
+    // controller;
+    // statistic;
+    // automatic_manual_mode;
+    // open_protocol_commands_disabled;
+    // audi;
+    // motor_turning;
+
+    (9999, 1) => keep_alive::MID9999rev1,
 );
 
 #[cfg(test)]
