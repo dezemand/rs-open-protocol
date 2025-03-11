@@ -2,6 +2,11 @@
 name = "open-protocol"
 version = "0.1.0"
 edition = "2021"
+description = "Implementation of the Atlas Copco/Torque Open Protocol specification in Rust."
+readme = "README.md"
+license-file = "LICENSE"
+homepage = "https://github.com/dezemand/rs-open-protocol"
+repository = "https://github.com/dezemand/rs-open-protocol"
 
 [dependencies]
 open-protocol-codec = { workspace = true }

@@ -1,7 +1,12 @@
 [package]
 name = "open-protocol-mqtt-adapter"
-version = "0.1.0"
+version = "0.0.0"
 edition = "2021"
+description = "Helper library with encoding and decoding functionalities for Atlas Copco/Torque Open Protocol."
+readme = "README.md"
+license-file = "LICENSE"
+homepage = "https://github.com/dezemand/rs-open-protocol"
+repository = "https://github.com/dezemand/rs-open-protocol"
 
 [dependencies]
 sparkplug-rs = { version = "0.4" }

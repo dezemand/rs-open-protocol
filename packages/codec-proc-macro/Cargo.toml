@@ -2,6 +2,11 @@
 name = "open-protocol-codec-proc-macro"
 version = "0.1.0"
 edition = "2021"
+description = "Procedural macros for deriving encode/decode implementations for Atlas Copco/Torque Open Protocol."
+readme = "README.md"
+license-file = "LICENSE"
+homepage = "https://github.com/dezemand/rs-open-protocol"
+repository = "https://github.com/dezemand/rs-open-protocol"
 
 [lib]
 proc-macro = true

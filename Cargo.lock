@@ -424,12 +424,11 @@ dependencies = [
 
 [[package]]
 name = "open-protocol-client"
-version = "0.1.0"
+version = "0.0.0"
 dependencies = [
  "bytes",
  "flume",
  "open-protocol",
- "open-protocol-codec",
  "thiserror 2.0.11",
  "tokio",
 ]
@@ -456,7 +455,7 @@ dependencies = [
 
 [[package]]
 name = "open-protocol-mqtt-adapter"
-version = "0.1.0"
+version = "0.0.0"
 dependencies = [
  "log",
  "open-protocol-client",

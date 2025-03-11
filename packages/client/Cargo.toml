@@ -1,11 +1,15 @@
 [package]
 name = "open-protocol-client"
-version = "0.1.0"
+version = "0.0.0"
 edition = "2021"
+description = "Library for implementing Atlas Copco/Torque Open Protocol clients."
+readme = "README.md"
+license-file = "LICENSE"
+homepage = "https://github.com/dezemand/rs-open-protocol"
+repository = "https://github.com/dezemand/rs-open-protocol"
 
 [dependencies]
 open-protocol = { workspace = true }
-open-protocol-codec = { workspace = true }
 thiserror = "2.0"
 tokio = { version = "1", features = ["full"] }
 flume = "0.11"
