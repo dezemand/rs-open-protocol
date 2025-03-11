@@ -1,3 +1,5 @@
+/* Note: this file is only used for testing. */
+
 use std::time::Duration;
 use flume::Sender;
 use tokio::signal::ctrl_c;
@@ -5,10 +7,7 @@ use tokio::time;
 use open_protocol::messages::communication::MID0003rev1;
 use open_protocol::messages::parameter_set::{MID0010rev1, MID0012rev1};
 use open_protocol::Message;
-use crate::client::{connect, Event, EventLoop};
-
-mod client;
-mod network;
+use open_protocol_client::client::{connect, Event, EventLoop};
 
 #[tokio::main(flavor = "current_thread")]
 async fn main() {
@@ -23,9 +22,10 @@ async fn main() {
     time::sleep(Duration::from_secs(1)).await;
 }
 
-async fn run_event_loop(mut event_loop: EventLoop, mut sender: Sender<Message>) {
+async fn run_event_loop(mut event_loop: EventLoop, sender: Sender<Message>) {
     loop {
         let event = event_loop.poll().await;
+        println!("Event: {:?}", event);
 
         match event {
             Ok(Event::Incoming(Message::MID0002rev1(message))) => {
@@ -45,12 +45,14 @@ async fn run_event_loop(mut event_loop: EventLoop, mut sender: Sender<Message>) 
                 println!("Parameter set: {:?}", message);
             }
 
-            Ok(event) => println!("{:?}", event),
+            // Ok(event) => println!("{:?}", event),
 
             Err(conn_err) => {
                 println!("Errored: {:?}", conn_err);
                 return;
             }
+
+            _ => {},
         }
     }
 }

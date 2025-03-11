@@ -2,8 +2,8 @@ use std::io;
 use thiserror;
 use open_protocol::{decode, encode};
 
-mod client;
-mod network;
+pub mod client;
+pub mod network;
 
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
@@ -16,8 +16,3 @@ pub enum Error {
 }
 
 pub type Result<T> = std::result::Result<T, Error>;
-
-
-#[cfg(test)]
-mod tests {
-}

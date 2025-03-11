@@ -8,6 +8,10 @@ license-file = "LICENSE"
 homepage = "https://github.com/dezemand/rs-open-protocol"
 repository = "https://github.com/dezemand/rs-open-protocol"
 
+[[bin]]
+name = "test-client"
+path = "src/bin/test.rs"
+
 [dependencies]
 open-protocol = { workspace = true }
 thiserror = "2.0"

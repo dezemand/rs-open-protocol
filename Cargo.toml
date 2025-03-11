@@ -10,7 +10,7 @@ members = [
 resolver = "2"
 
 [workspace.dependencies]
-open-protocol = { path = "packages/open-protocol" }
-open-protocol-client = { path = "packages/client" }
-open-protocol-codec = { path = "packages/codec" }
-open-protocol-codec-proc-macro = { path = "packages/codec-proc-macro" }
+open-protocol = { version = "0.1.0", path = "packages/open-protocol" }
+open-protocol-client = { version = "0.0.0", path = "packages/client" }
+open-protocol-codec = { version = "0.1.0", path = "packages/codec" }
+open-protocol-codec-proc-macro = { version = "0.1.0", path = "packages/codec-proc-macro" }
