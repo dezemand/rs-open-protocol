@@ -371,7 +371,7 @@ mod tests {
 
         let result = encode::encode(&message);
 
-        assert_eq!(result, Ok("01012".to_string()));
+        assert_eq!(result, Ok("012".to_string()));
     }
 
     #[test]

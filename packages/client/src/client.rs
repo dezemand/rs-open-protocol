@@ -3,9 +3,8 @@ use bytes::{BufMut, BytesMut};
 use flume::{bounded, Receiver, Sender};
 use open_protocol::messages::communication::MID0001rev7;
 use open_protocol::messages::keep_alive::MID9999rev1;
-use open_protocol::{Header, OpenProtocolMessage};
-use open_protocol_codec::encode::{Encode, Encoder};
-use open_protocol_codec::{decode, encode};
+use open_protocol::{Header, Message};
+use open_protocol::{decode, encode::{self, Encode, Encoder}};
 use std::collections::VecDeque;
 use std::io;
 use std::net::SocketAddr;
@@ -13,7 +12,6 @@ use std::pin::Pin;
 use std::str::FromStr;
 use std::time::Duration;
 use thiserror;
-use tokio::io::AsyncWriteExt;
 use tokio::net::TcpStream;
 use tokio::time::{Instant, Sleep};
 use tokio::{select, time};
@@ -32,15 +30,15 @@ pub enum ConnectionError {
 
 #[derive(Debug)]
 pub enum Event {
-    Incoming(OpenProtocolMessage),
-    Outgoing(OpenProtocolMessage),
+    Incoming(Message),
+    Outgoing(Message),
 }
 
 pub struct EventLoop {
     network: Option<Network>,
-    requests_rx: Receiver<OpenProtocolMessage>,
-    pub requests_tx: Sender<OpenProtocolMessage>,
-    pending: VecDeque<OpenProtocolMessage>, // should not be added to yet...
+    requests_rx: Receiver<Message>,
+    pub requests_tx: Sender<Message>,
+    pending: VecDeque<Message>, // should not be added to yet...
     events: VecDeque<Event>,
     write_buf: BytesMut,
     keepalive_timeout: Option<Pin<Box<Sleep>>>,
@@ -101,14 +99,14 @@ impl EventLoop {
                 let timeout = self.keepalive_timeout.as_mut().unwrap();
                 timeout.as_mut().reset(Instant::now() + Duration::from_secs(5));
 
-                self.handle_outgoing_packet(OpenProtocolMessage::MID9999rev1(MID9999rev1 {}))?;
+                self.handle_outgoing_packet(Message::MID9999rev1(MID9999rev1 {}))?;
                 self.network.as_mut().unwrap().flush(&mut self.write_buf).await?;
                 Ok(self.events.pop_front().unwrap())
             }
         }
     }
 
-    fn handle_outgoing_packet(&mut self, request: OpenProtocolMessage) -> Result<(), ConnectionError> {
+    fn handle_outgoing_packet(&mut self, request: Message) -> Result<(), ConnectionError> {
         let mut payload_encoder = Encoder::new();
         request.encode_payload(&mut payload_encoder)?;
 
@@ -147,10 +145,10 @@ impl EventLoop {
 
 
 async fn next_request(
-    pending: &mut VecDeque<OpenProtocolMessage>,
-    rx: &Receiver<OpenProtocolMessage>,
+    pending: &mut VecDeque<Message>,
+    rx: &Receiver<Message>,
     pending_throttle: Duration,
-) -> Result<OpenProtocolMessage, ConnectionError> {
+) -> Result<Message, ConnectionError> {
     if !pending.is_empty() {
         time::sleep(pending_throttle).await;
         Ok(pending.pop_front().unwrap())
@@ -162,7 +160,7 @@ async fn next_request(
     }
 }
 
-pub async fn connect() -> (Sender<OpenProtocolMessage>, EventLoop) {
+pub async fn connect() -> (Sender<Message>, EventLoop) {
     let socket = TcpStream::connect(SocketAddr::from_str("127.0.0.1:4545").unwrap())
         .await
         .unwrap();
@@ -170,7 +168,7 @@ pub async fn connect() -> (Sender<OpenProtocolMessage>, EventLoop) {
     let event_loop = EventLoop::new(socket);
     let sender = event_loop.requests_tx.clone();
 
-    sender.send_async(OpenProtocolMessage::MID0001rev1(MID0001rev7 { keep_alive: None })).await.unwrap();
+    sender.send_async(Message::MID0001rev1(MID0001rev7 { keep_alive: None })).await.unwrap();
 
     (sender, event_loop)
 }

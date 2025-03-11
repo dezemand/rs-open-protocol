@@ -1,6 +1,6 @@
 use std::io;
 use thiserror;
-use open_protocol_codec::{decode, encode};
+use open_protocol::{decode, encode};
 
 mod client;
 mod network;

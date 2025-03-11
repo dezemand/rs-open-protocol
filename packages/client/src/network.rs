@@ -3,9 +3,8 @@ use std::io;
 use bytes::{Buf, BytesMut};
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::net::TcpStream;
-use open_protocol::{Header, OpenProtocolMessage};
-use open_protocol_codec::decode;
-use open_protocol_codec::decode::{Decode, Decoder};
+use open_protocol::{Header, Message};
+use open_protocol::decode::{self, Decoder, Decode};
 use crate::client::{ConnectionError, Event};
 
 pub struct Network {
@@ -73,7 +72,7 @@ impl Network {
     }
 }
 
-fn read_message(stream: &mut BytesMut) -> decode::Result<OpenProtocolMessage> {
+fn read_message(stream: &mut BytesMut) -> decode::Result<Message> {
     if stream.len() < 20 {
         return Err(decode::Error::InsufficientBytes { have: stream.len(), need: 20 });
     }
@@ -85,7 +84,7 @@ fn read_message(stream: &mut BytesMut) -> decode::Result<OpenProtocolMessage> {
         return Err(decode::Error::InsufficientBytes { have: stream.len(), need: header.length as usize });
     }
 
-    let message = OpenProtocolMessage::decode_payload(header.mid, header.revision_number(), &mut decoder)?;
+    let message = Message::decode_payload(header.mid, header.revision_number(), &mut decoder)?;
     decoder.expect_char(0x0 as char)?;
     stream.advance((header.length + 1) as usize);
     Ok(message)

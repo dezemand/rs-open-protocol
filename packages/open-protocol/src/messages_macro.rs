@@ -1,19 +1,19 @@
 macro_rules! open_protocol_messages {
-    ( $( ($mid:expr, $rev:expr) => $msg:ty ),* $(,)? ) => {
+    ( $( MID $mid:literal revision $rev:literal : $msg:ty ),* $(,)? ) => {
         ::paste::paste!(
             /// Enum representing any possible OpenProtocol message.
             #[derive(Debug, Eq, PartialEq)]
-            pub enum OpenProtocolMessage {
+            pub enum Message {
                 $(
                     [<MID $mid rev $rev>]($msg),
                 )*
             }
 
-            impl OpenProtocolMessage {
+            impl Message {
                 pub fn mid_revision(&self) -> (u16, u16) {
                     match self {
                         $(
-                            OpenProtocolMessage::[<MID $mid rev $rev>](_) => ($mid, $rev),
+                            Message::[<MID $mid rev $rev>](_) => ($mid, $rev),
                         )*
                     }
                 }
@@ -21,7 +21,7 @@ macro_rules! open_protocol_messages {
                 pub fn encode_payload(&self, encoder: &mut ::open_protocol_codec::encode::Encoder) -> ::open_protocol_codec::encode::Result<()> {
                     match self {
                         $(
-                            OpenProtocolMessage::[<MID $mid rev $rev>](payload) => payload.encode(encoder)?,
+                            Message::[<MID $mid rev $rev>](payload) => payload.encode(encoder)?,
                         )*
                     };
                     Ok(())
@@ -30,7 +30,7 @@ macro_rules! open_protocol_messages {
                 pub fn decode_payload(mid: u16, revision: u16, decoder: &mut ::open_protocol_codec::decode::Decoder) -> ::open_protocol_codec::decode::Result<Self> {
                     Ok(match (mid, revision) {
                         $(
-                            ($mid, $rev) => OpenProtocolMessage::[<MID $mid rev $rev>]($msg::decode(decoder)?),
+                            ($mid, $rev) => Message::[<MID $mid rev $rev>]($msg::decode(decoder)?),
                         )*
                         _ => return Err(::open_protocol_codec::decode::Error::NotImplemented),
                     })
